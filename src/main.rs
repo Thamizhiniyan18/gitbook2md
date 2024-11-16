@@ -6,7 +6,7 @@ use std::time::{Duration, Instant};
 mod filesystem;
 mod replace;
 
-/// Gitbook flavoured Markdown to normal Markdown
+/// Gitbook Flavoured Markdown to Standard Markdown
 #[derive(Parser, Debug)]
 #[command(version, about, long_about = None)]
 struct Args {
