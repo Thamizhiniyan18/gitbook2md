@@ -1,4 +1,3 @@
-use core::panic;
 use regex::Regex;
 use std::fs;
 use std::path::PathBuf;

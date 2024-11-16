@@ -3,10 +3,8 @@ use std::path::{Path, PathBuf};
 use walkdir::{DirEntry, WalkDir};
 
 pub struct FileDetail {
-    pub file_name: String,
     pub file_path: PathBuf,
     pub file_dir: PathBuf,
-    pub output_file_dir: PathBuf,
     pub output_assets_dir: PathBuf,
     pub output_file_path: PathBuf,
 }
@@ -44,10 +42,8 @@ pub fn find_md_files(source_dir: &PathBuf, output_dir: &PathBuf) -> Vec<FileDeta
             );
 
             md_files.push(FileDetail {
-                file_name: file_name.clone(),
                 file_path,
                 file_dir: entry.path().parent().unwrap().to_path_buf(),
-                output_file_dir: output_file_dir.clone(),
                 output_assets_dir: output_file_dir.join(Path::new("assets")),
                 output_file_path: output_file_dir.join(Path::new(&file_name)),
             });
@@ -58,19 +54,8 @@ pub fn find_md_files(source_dir: &PathBuf, output_dir: &PathBuf) -> Vec<FileDeta
 }
 
 pub fn create_output_directories(md_files: &Vec<FileDetail>) {
-    println!("[+] Creating the output directores...");
 
     for each in md_files {
-        // println!(
-        //     "{}\n{:?}\n{:?}\n{:?}\n{:?}\n{:?}\n",
-        //     each.file_name,
-        //     each.file_dir,
-        //     each.file_path,
-        //     each.output_file_dir,
-        //     each.output_assets_dir,
-        //     each.output_file_path
-        // );
-
         match create_dir_all(&each.output_assets_dir) {
             Ok(_) => {}
             Err(error) => panic!("Failed to create the directory: {}", error),

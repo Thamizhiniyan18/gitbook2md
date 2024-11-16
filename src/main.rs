@@ -38,12 +38,6 @@ fn main() {
         if !args.output.is_dir() {
             panic!("The given output path exists but is not a directory.");
         }
-    } else {
-        println!("[+] The output directory doesn't exists. Creating it...");
-        match fs::create_dir(&args.output) {
-            Ok(_) => println!("[+] Successfully created the output directory."),
-            Err(error) => panic!("Failed to create the directory: {}", error),
-        }
     }
 
     let md_files: Vec<filesystem::FileDetail> =
@@ -51,11 +45,13 @@ fn main() {
 
     println!("[+] Number of Markdown files found: {}", md_files.len());
 
+    println!("[+] Creating the output directores...");
+
     filesystem::create_output_directories(&md_files);
 
     println!("[+] Successfully created the output directories.");
 
-    println!("[+] Modifying files and moved assets.");
+    println!("[+] Modifying files and moving assets.");
 
     for each in md_files {
         let mut content: String = match fs::read_to_string(each.file_path) {
