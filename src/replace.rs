@@ -38,6 +38,13 @@ pub fn embed_urls(content: String) -> String {
         )
     }
 
+    let regex_pattern = match Regex::new(r#"\{%\sendembed\s%\}"#) {
+        Ok(pattern) => pattern,
+        Err(why) => panic!("Couldn't parse the given regex pattern: {}", why),
+    };
+
+    replaced_content = regex_pattern.replace_all(&replaced_content, "").to_string();
+
     return replaced_content;
 }
 
