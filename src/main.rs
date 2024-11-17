@@ -17,6 +17,15 @@ struct Args {
     /// Output Directory Path
     #[arg(short, long)]
     output: PathBuf,
+
+    /// Output filename: For example, all output markdown files will be named as <filename>.md.
+    /// Default filename is the original filename.
+    #[arg(short, long)]
+    filename: Option<String>,
+
+    /// Assets direcotry name.
+    #[arg(short, long, default_value = "assets")]
+    assets_dir_name: String,
 }
 
 fn main() {
@@ -40,8 +49,12 @@ fn main() {
         }
     }
 
-    let md_files: Vec<filesystem::FileDetail> =
-        filesystem::find_md_files(&args.source, &args.output);
+    let md_files: Vec<filesystem::FileDetail> = filesystem::find_md_files(
+        &args.source,
+        &args.output,
+        &args.filename,
+        &args.assets_dir_name,
+    );
 
     println!("[+] Number of Markdown files found: {}", md_files.len());
 

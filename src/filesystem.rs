@@ -17,7 +17,12 @@ fn is_hidden(entry: &DirEntry) -> bool {
         .unwrap_or(false)
 }
 
-pub fn find_md_files(source_dir: &PathBuf, output_dir: &PathBuf) -> Vec<FileDetail> {
+pub fn find_md_files(
+    source_dir: &PathBuf,
+    output_dir: &PathBuf,
+    output_file_name: &Option<std::string::String>,
+    assets_dir_name: &String,
+) -> Vec<FileDetail> {
     let walker = WalkDir::new(source_dir).into_iter();
 
     let mut md_files: Vec<FileDetail> = Vec::new();
@@ -28,7 +33,11 @@ pub fn find_md_files(source_dir: &PathBuf, output_dir: &PathBuf) -> Vec<FileDeta
         if entry.path().is_file()
             && entry.path().extension().and_then(|ext| ext.to_str()) == Some("md")
         {
-            let file_name = entry.file_name().to_string_lossy().to_string();
+            let file_name = match output_file_name {
+                Some(value) => format!("{}.md", value),
+                None => entry.file_name().to_string_lossy().to_string(),
+            };
+
             let file_path: PathBuf = entry.path().to_path_buf();
             let output_file_dir: PathBuf = output_dir.join(
                 &file_path
@@ -44,7 +53,7 @@ pub fn find_md_files(source_dir: &PathBuf, output_dir: &PathBuf) -> Vec<FileDeta
             md_files.push(FileDetail {
                 file_path,
                 file_dir: entry.path().parent().unwrap().to_path_buf(),
-                output_assets_dir: output_file_dir.join(Path::new("assets")),
+                output_assets_dir: output_file_dir.join(Path::new(assets_dir_name)),
                 output_file_path: output_file_dir.join(Path::new(&file_name)),
             });
         }
@@ -54,7 +63,6 @@ pub fn find_md_files(source_dir: &PathBuf, output_dir: &PathBuf) -> Vec<FileDeta
 }
 
 pub fn create_output_directories(md_files: &Vec<FileDetail>) {
-
     for each in md_files {
         match create_dir_all(&each.output_assets_dir) {
             Ok(_) => {}
